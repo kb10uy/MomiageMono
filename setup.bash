@@ -20,3 +20,5 @@ pushd "fonts/jetbrains-mono"
     wget -O "jetbrains-mono.zip" "https://fonts.google.com/download?family=JetBrains%20Mono"
     unzip -j "jetbrains-mono.zip" "static/*"
 popd
+
+mkdir "dist"
