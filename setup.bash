@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 set -e
 
-rm -rf "fonts"
+rm -rf "fonts" "dist"
 
-mkdir -p "fonts/mplus2"
-pushd "fonts/mplus2"
-    wget -O "mplus2.zip" "https://fonts.google.com/download?family=M%20PLUS%202"
-    unzip -j "mplus2.zip" "static/*"
+mkdir -p "fonts/m-plus-1-code"
+pushd "fonts/m-plus-1-code"
+    wget -O "m-plus-1-code.zip" "https://fonts.google.com/download?family=M%20PLUS%201%20Code"
+    unzip -j "m-plus-1-code.zip" "static/*"
+popd
+
+mkdir -p "fonts/m-plus-2"
+pushd "fonts/m-plus-2"
+    wget -O "m-plus-2.zip" "https://fonts.google.com/download?family=M%20PLUS%202"
+    unzip -j "m-plus-2.zip" "static/*"
 popd
 
 mkdir -p "fonts/source-han-sans"

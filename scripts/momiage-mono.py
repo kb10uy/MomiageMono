@@ -1,17 +1,10 @@
 #!/usr/bin/env fontforge -lang=py -script
 
-from os import path
 from typing import Any
+from datetime import date
+from pathlib import Path
 import fontforge
-
-MPLUS2_DIR = "./fonts/mplus2"
-SOURCE_HAN_SANS_DIR = "./fonts/source-han-sans"
-JETBRAINS_MONO_DIR = "./fonts/jetbrains-mono"
-IGNORE_GLYPH = [
-    "uniFEFF",
-    ".notdef",
-    "m_p_l_u_s_f_o_n_t_s",
-]
+import psMat
 
 
 class Metadata:
@@ -24,89 +17,136 @@ class Metadata:
 
 
 class SourceSet:
-    mplus2: str
+    m_plus_2: str
     source_han_sans: str
     jetbrains_mono: str
 
     def __init__(self, m: str, s: str, j: str):
-        self.mplus2 = m
+        self.m_plus_2 = m
         self.source_han_sans = s
         self.jetbrains_mono = j
 
-    def mplus2_path(self) -> str:
-        return path.join(MPLUS2_DIR, self.mplus2)
+    def m_plus_2_path(self) -> str:
+        return str(Path("./fonts/m-plus-2") / self.m_plus_2)
 
     def shs_path(self) -> str:
-        return path.join(SOURCE_HAN_SANS_DIR, self.source_han_sans)
+        return str(Path("./fonts/source-han-sans") / self.source_han_sans)
 
     def jbm_path(self) -> str:
-        return path.join(JETBRAINS_MONO_DIR, self.jetbrains_mono)
+        return str(Path("./fonts/jetbrains-mono") / self.jetbrains_mono)
 
 
 def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: str):
     print(f"=> Generating Weight {weight}")
 
-    font_jbm = fontforge.open(source_set.jbm_path())
-    font_jbm.em = 2048
+    # Momiage Mono: Prepare
+    font = fontforge.font()
+    font.encoding = "UnicodeFull"
 
-    font_jbm.mergeFonts(source_set.mplus2_path())
-    # font_jbm.mergeFonts(source_set.shs_path())
+    # Momiage Mono: Add Anchor Class
+    font.addLookup("marks", "gpos_mark2base", None,
+                   generate_mark_feature_tuple())
+    font.addLookupSubtable("marks", "anchors")
+    font.addAnchorClass("anchors", "Anchor-0")
+    font.addAnchorClass("anchors", "Anchor-1")
+    font.addAnchorClass("anchors", "Anchor-2")
 
-    # font_shs = fontforge.open(source_set.shs_path())
-    # font_mplus2 = fontforge.open(source_set.mplus2_path())
+    # M PLUS 2: Prepare
+    font_mp2 = fontforge.open(source_set.m_plus_2_path())
 
-    # Remove duplicate glyphs
-    # exclude_glyphs(font_jbm, font_shs)
-    # exclude_glyphs(font_jbm, font_mplus2)
-    # exclude_glyphs(font_mplus2, font_shs)
+    # M PLUS 2: Scale fullwidth glyphs x1.2 and set width to 2456
+    transformation = psMat.compose(
+        psMat.translate(0, -100),
+        psMat.scale(1.2, 1.2),
+    )
 
-    # font_shs.mergeFonts(source_set.mplus2_path())
-    # font_shs.mergeFonts(source_set.jbm_path())
-
-    # Merge fonts into JetBrains Mono
-    # paste_glyphs(font_jbm, font_mplus2)
-    # paste_glyphs(font_jbm, font_shs)
-
-    # Set metadata
-    font_jbm.os2_vendor = "n935"
-    font_jbm.sfnt_names = generate_sfnt_names(metadata)
-    font_jbm.gasp = generate_gasp()
-
-    # Generate
-    font_jbm.generate(filename, "", ("short-post", "PfEd-lookups", "opentype"))
-
-
-def exclude_glyphs(font_needle: Any, font_haystack: Any):
-    print(f"==> Excluding Glyphs of {font_needle.familyname} from {font_haystack.familyname}")
-
-    font_needle.selection.all()
-    font_haystack.selection.none()
-
-    for glyph in font_needle.selection.byGlyphs:
-        if glyph.glyphname in font_haystack and not glyph_should_be_ignored(glyph):
-            font_haystack.selection.select(("more",), glyph.glyphname)
-    font_haystack.clear()
-
-
-def paste_glyphs(font_dest: Any, font_src: Any):
-    print(f"==> Copying Glyphs to {font_dest.familyname} from {font_src.familyname}")
-
-    font_dest.selection.none()
-    font_src.selection.none()
-    for glyph in font_src.glyphs():
-        if glyph_should_be_ignored(glyph):
+    font_mp2.selection.none()
+    for fw_glyph in font_mp2.glyphs():
+        if fw_glyph.width != 1000:
             continue
-        print(glyph.glyphname)
-        font_src.selection.select(glyph.glyphname)
-        font_src.copy()
-        font_dest.selection.select(glyph.glyphname)
-        font_dest.paste()
+        fw_glyph.transform(transformation)
+        fw_glyph.width = 1200
+
+    # M PLUS 2: Copy fullwidth glyphs to Momiage Mono
+    font.selection.none()
+    font_mp2.selection.none()
+    for fw_glyph in font_mp2.glyphs():
+        if fw_glyph.width != 1200:
+            continue
+
+        print(f"Copying {fw_glyph.glyphname} from M PLUS 2")
+        # Make sure given glyphname exist
+        if font.findEncodingSlot(fw_glyph.glyphname) == -1:
+            font.createChar(-1, fw_glyph.glyphname)
+
+        font_mp2.selection.select(fw_glyph)
+        font_mp2.copy()
+        font.selection.select(fw_glyph.glyphname)
+        font.paste()
+
+    # JetBrains Mono: Prepare
+    font_jbm = fontforge.open(source_set.jbm_path())
+
+    # JetBrains Mono: Copy all glyphs to Momiage Mono
+    font.selection.none()
+    font_jbm.selection.none()
+    for glyph in font_jbm.glyphs():
+        print(f"Copying {glyph.glyphname} from JetBrains Mono")
+        # Make sure given glyphname exist
+        if font.findEncodingSlot(glyph.glyphname) == -1:
+            font.createChar(-1, glyph.glyphname)
+
+        font_jbm.selection.select(glyph)
+        font_jbm.copy()
+        font.selection.select(glyph.glyphname)
+        font.paste()
+
+    fw_glyph = None
+    glyph = None
+    font_jbm = None
+    font_mp2 = None
+
+    # Momiage Mono: Set metadata
+    font.os2_vendor = "n935"
+    font.sfnt_names = generate_sfnt_names(metadata)
+    font.gasp_version = 1
+    font.gasp = generate_gasp()
+    set_metrics(font)
+
+    # Momiage Mono: Generate
+    print(f"Writing {filename}")
+    font.generate(filename, "", ("short-post", "PfEd-lookups", "opentype"))
 
 
-def glyph_should_be_ignored(glyph: Any):
-    if glyph.glyphname in IGNORE_GLYPH:
-        return True
-    return False
+def set_metrics(font: fontforge.font):
+    font.ascent = 800
+    font.descent = 200
+    font.os2_version = 4
+    font.os2_use_typo_metrics = False
+    font.os2_winascent_add = False
+    font.os2_windescent_add = False
+    font.os2_typoascent_add = False
+    font.os2_typodescent_add = False
+    font.hhea_ascent_add = False
+    font.hhea_descent_add = False
+    font.os2_winascent = 1000
+    font.os2_windescent = 200
+    font.os2_typoascent = 800
+    font.os2_typodescent = -200
+    font.hhea_ascent = 1000
+    font.hhea_descent = -200
+    font.em = 2048
+
+
+def generate_mark_feature_tuple() -> tuple:
+    feature = "mark"
+    languages = tuple([
+        ("DFLT", "dflt"),
+        ("latn", "dflt"),
+    ])
+    return tuple([
+        (feature, languages),
+    ])
 
 
 def generate_sfnt_names(metadata: Metadata) -> tuple:
@@ -145,7 +185,7 @@ def generate_gasp() -> tuple:
     )
 
 
-VERSION = "1.0"
+VERSION = f"1.0-{date.today()}"
 SOURCE_SETS = {
     "Regular": SourceSet(
         "MPLUS2-Regular.ttf",
@@ -161,5 +201,5 @@ SOURCE_SETS = {
 
 for weight, source_set in SOURCE_SETS.items():
     metadata = Metadata(weight, VERSION)
-    target_filename = path.join("dist", f"MomiageMono-{weight}.ttf")
-    generate_momiage_mono(source_set, metadata, target_filename)
+    target_filename = Path("dist") / f"MomiageMono-{weight}.ttf"
+    generate_momiage_mono(source_set, metadata, str(target_filename))
