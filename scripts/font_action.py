@@ -20,7 +20,8 @@ def fetch_glyph_names(font: fontforge.font, predicate: Callable[[fontforge.glyph
 def create_insufficient_slots(font: fontforge.font, glyph_names: list[str]):
     for glyph_name in glyph_names:
         if font.findEncodingSlot(glyph_name) == -1:
-            font.createChar(-1, glyph_name)
+            new_glyph = font.createChar(-1, glyph_name)
+            print(f"{glyph_name} => {new_glyph.glyphname}")
 
 
 def copy_glyphs(dest: fontforge.font, src: fontforge.font, glyph_names: list[str]):

@@ -26,73 +26,6 @@ def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: s
     font.encoding = "UnicodeFull"
     font_action.set_metrics(font)
 
-    # Momiage Mono: Add Anchor Class
-    font.addLookup(
-        "Mark-to-Base Lookup for JetBrains Mono (0)",
-        "gpos_mark2base", None,
-        (
-            ("mark", (
-                ("DFLT", "dflt"),
-                ("latn", "AZE "),
-                ("latn", "CAT "),
-                ("latn", "CRT "),
-                ("latn", "KAZ "),
-                ("latn", "MOL "),
-            )),
-        )
-    )
-    font.addLookupSubtable(
-        "Mark-to-Base Lookup for JetBrains Mono (0)",
-        "Anchors Subtable for JetBrains Mono (0)"
-    )
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-0")
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-1")
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-2")
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-3")
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-4")
-
-    font.addLookup(
-        "Mark-to-Mark Lookup for JetBrains Mono (1)",
-        "gpos_mark2mark", None,
-        (
-            ("mkmk", (
-                ("DFLT", "dflt"),
-                ("latn", "AZE "),
-                ("latn", "CAT "),
-                ("latn", "CRT "),
-                ("latn", "KAZ "),
-                ("latn", "MOL "),
-            )),
-        ),
-        "Mark-to-Base Lookup for JetBrains Mono (0)"
-    )
-    font.addLookupSubtable(
-        "Mark-to-Mark Lookup for JetBrains Mono (1)",
-        "Anchors Subtable for JetBrains Mono (1)"
-    )
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (1)", "Anchor-5")
-
-    font.addLookup(
-        "Mark-to-Mark Lookup for JetBrains Mono (2)",
-        "gpos_mark2mark", None,
-        (
-            ("mkmk", (
-                ("DFLT", "dflt"),
-                ("latn", "AZE "),
-                ("latn", "CAT "),
-                ("latn", "CRT "),
-                ("latn", "KAZ "),
-                ("latn", "MOL "),
-            )),
-        ),
-        "Mark-to-Mark Lookup for JetBrains Mono (1)"
-    )
-    font.addLookupSubtable(
-        "Mark-to-Mark Lookup for JetBrains Mono (2)",
-        "Anchors Subtable for JetBrains Mono (2)"
-    )
-    font.addAnchorClass("Anchors Subtable for JetBrains Mono (2)", "Anchor-6")
-
     # GenEi Mono Gothic
     print("Copying glyphs from GenEi Mono Gothic")
 
@@ -128,6 +61,9 @@ def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: s
     jbm_font = fontforge.open(source_set.jbm_path())
     jbm_font.em = 2048
 
+    font.importLookups(jbm_font, jbm_font.gsub_lookups)
+    font.importLookups(jbm_font, jbm_font.gpos_lookups)
+
     jbm_glyph_names = font_action.fetch_glyph_names(jbm_font, None)
     font_action.create_insufficient_slots(font, jbm_glyph_names)
     font_action.copy_glyphs(font, jbm_font, jbm_glyph_names)
@@ -135,6 +71,7 @@ def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: s
     # Finalize
     font_action.set_info(font, metadata)
     font.generate(filename, "", ("short-post", "PfEd-lookups", "opentype"))
+    font.save(f"{filename}.sfd")
 
 
 for weight, source_set in SOURCE_SETS.items():
