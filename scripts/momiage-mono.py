@@ -1,7 +1,7 @@
 from datetime import date
 from pathlib import Path
 from mmtool import font_action
-from mmtool.data import SourceSet, Metadata, is_japanese, REPO_DIST
+from mmtool.data import SourceSet, Metadata, REPO_DIST
 from mmtool.unicode import block_width_of, unicode_block_of, target_width_of
 import fontforge
 import psMat
