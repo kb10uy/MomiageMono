@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+git submodule update --init
+
 mkdir -p "fonts"
 
 mkdir -p "fonts/gen-ei-mono-go"
