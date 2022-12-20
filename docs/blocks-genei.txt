@@ -1,0 +1,66 @@
+Basic Latin
+Latin-1 Supplement
+Latin Extended-A
+Latin Extended-B
+IPA Extensions
+Spacing Modifier Letters
+Combining Diacritical Marks
+Greek and Coptic
+Cyrillic
+Cyrillic Supplement
+Hebrew
+Thai
+Phonetic Extensions
+Phonetic Extensions Supplement
+Combining Diacritical Marks Supplement
+Latin Extended Additional
+Greek Extended
+General Punctuation
+Superscripts and Subscripts
+Currency Symbols
+Combining Diacritical Marks for Symbols
+Letterlike Symbols
+Number Forms
+Arrows
+Mathematical Operators
+Miscellaneous Technical
+Control Pictures
+Enclosed Alphanumerics
+Box Drawing
+Block Elements
+Geometric Shapes
+Miscellaneous Symbols
+Dingbats
+Miscellaneous Mathematical Symbols-A
+Supplemental Arrows-B
+Miscellaneous Mathematical Symbols-B
+Supplemental Mathematical Operators
+Miscellaneous Symbols and Arrows
+Latin Extended-C
+Supplemental Punctuation
+CJK Radicals Supplement
+Kangxi Radicals
+Ideographic Description Characters
+CJK Symbols and Punctuation
+Hiragana
+Katakana
+Katakana Phonetic Extensions
+Enclosed CJK Letters and Months
+CJK Compatibility
+CJK Unified Ideographs Extension A
+CJK Unified Ideographs
+Latin Extended-D
+CJK Compatibility Ideographs
+Alphabetic Presentation Forms
+Vertical Forms
+CJK Compatibility Forms
+Small Form Variants
+Halfwidth and Fullwidth Forms
+Kana Supplement
+Mathematical Alphanumeric Symbols
+Enclosed Alphanumeric Supplement
+Enclosed Ideographic Supplement
+CJK Unified Ideographs Extension B
+CJK Unified Ideographs Extension C
+CJK Unified Ideographs Extension D
+CJK Compatibility Ideographs Supplement

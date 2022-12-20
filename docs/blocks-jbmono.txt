@@ -1,0 +1,35 @@
+Basic Latin
+Latin-1 Supplement
+Latin Extended-A
+Latin Extended-B
+IPA Extensions
+Spacing Modifier Letters
+Combining Diacritical Marks
+Greek and Coptic
+Cyrillic
+Gujarati
+Latin Extended Additional
+General Punctuation
+Superscripts and Subscripts
+Currency Symbols
+Letterlike Symbols
+Number Forms
+Arrows
+Mathematical Operators
+Miscellaneous Technical
+Control Pictures
+Box Drawing
+Block Elements
+Geometric Shapes
+Miscellaneous Symbols
+Dingbats
+Miscellaneous Mathematical Symbols-A
+Supplemental Arrows-A
+Supplemental Arrows-B
+Miscellaneous Mathematical Symbols-B
+Supplemental Mathematical Operators
+Miscellaneous Symbols and Arrows
+Private Use Area
+Arabic Presentation Forms-B
+Specials
+Mathematical Alphanumeric Symbols
