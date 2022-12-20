@@ -1,4 +1,3 @@
-from typing import Any
 from datetime import date
 from pathlib import Path
 from mmtool import font_action
