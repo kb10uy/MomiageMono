@@ -333,72 +333,72 @@ UNICODE_BLOCKS: list[tuple[int, int, str]] = [
     (0x100000, 0x10FFFF, "Supplementary Private Use Area-B"),
 ]
 
-TARGET_BLOCKS: list[tuple(str, str)] = [
+TARGET_BLOCKS: dict[str, tuple[str, str | None]] = {
     # Common
-    ("Arrows", "half"),
-    ("Basic Latin", "half"),
-    ("Block Elements", "half"),
-    ("Box Drawing", "half"),
-    ("Combining Diacritical Marks", "half"),
-    ("Control Pictures", "half"),
-    ("Currency Symbols", "half"),
-    ("Cyrillic", "half"),
-    ("Dingbats", "half"),
-    ("General Punctuation", "half"),
-    ("Geometric Shapes", "half"),
-    ("Greek and Coptic", "half"),
-    ("IPA Extensions", "half"),
-    ("Latin Extended Additional", "half"),
-    ("Latin Extended-A", "half"),
-    ("Latin Extended-B", "half"),
-    ("Latin-1 Supplement", "half"),
-    ("Letterlike Symbols", "half"),
-    ("Mathematical Alphanumeric Symbols", "half"),
-    ("Mathematical Operators", "half"),
-    ("Miscellaneous Mathematical Symbols-A", "half"),
-    ("Miscellaneous Mathematical Symbols-B", "half"),
-    ("Miscellaneous Symbols", "half"),
-    ("Miscellaneous Symbols and Arrows", "half"),
-    ("Miscellaneous Technical", "half"),
-    ("Number Forms", "half"),
-    ("Spacing Modifier Letters", "half"),
-    ("Superscripts and Subscripts", "half"),
-    ("Supplemental Arrows-B", "half"),
-    ("Supplemental Mathematical Operators", "half"),
+    "Miscellaneous Symbols": ("complex", None),
+    "Miscellaneous Symbols and Arrows": ("half", None),
 
     # JetBrains Mono specific
-    ("Gujarati", "half"),
-    ("Supplemental Arrows-A", "half"),
-    ("Private Use Area", "half"),
-    ("Arabic Presentation Forms-B", "half"),
-    ("Specials", "half"),
+    "Arrows": ("half", "jbm"),
+    "Basic Latin": ("half", "jbm"),
+    "Block Elements": ("half", "jbm"),
+    "Box Drawing": ("half", "jbm"),
+    "Combining Diacritical Marks": ("half", "jbm"),
+    "Control Pictures": ("half", "jbm"),
+    "Currency Symbols": ("half", "jbm"),
+    "Cyrillic": ("half", "jbm"),
+    "Dingbats": ("half", "jbm"),
+    "General Punctuation": ("half", "jbm"),
+    "Geometric Shapes": ("half", "jbm"),
+    "Greek and Coptic": ("half", "jbm"),
+    "IPA Extensions": ("half", "jbm"),
+    "Latin Extended Additional": ("half", "jbm"),
+    "Latin Extended-A": ("half", "jbm"),
+    "Latin Extended-B": ("half", "jbm"),
+    "Latin-1 Supplement": ("half", "jbm"),
+    "Letterlike Symbols": ("half", "jbm"),
+    "Mathematical Alphanumeric Symbols": ("half", "jbm"),
+    "Mathematical Operators": ("half", "jbm"),
+    "Miscellaneous Mathematical Symbols-A": ("half", "jbm"),
+    "Miscellaneous Mathematical Symbols-B": ("half", "jbm"),
+    "Miscellaneous Technical": ("half", "jbm"),
+    "Number Forms": ("half", "jbm"),
+    "Spacing Modifier Letters": ("half", "jbm"),
+    "Superscripts and Subscripts": ("half", "jbm"),
+    "Supplemental Arrows-B": ("half", "jbm"),
+    "Supplemental Mathematical Operators": ("half", "jbm"),
+    "Gujarati": ("half", "jbm"),
+    "Supplemental Arrows-A": ("half", "jbm"),
+    "Private Use Area": ("half", "jbm"),
+    "Arabic Presentation Forms-B": ("half", "jbm"),
+    "Specials": ("half", "jbm"),
 
     # GenEi specific
-    ("Hebrew", "half"),
-    ("Thai", "half"),
-    ("Enclosed Alphanumerics", "half"),
-    ("CJK Radicals Supplement", "full"),
-    ("Kangxi Radicals", "full"),
-    ("Ideographic Description Characters", "full"),
-    ("CJK Symbols and Punctuation", "full"),
-    ("Hiragana", "full"),
-    ("Katakana", "full"),
-    ("Katakana Phonetic Extensions", "full"),
-    ("Enclosed CJK Letters and Months", "full"),
-    ("CJK Compatibility", "full"),
-    ("CJK Unified Ideographs Extension A", "full"),
-    ("CJK Unified Ideographs", "full"),
-    ("CJK Compatibility Ideographs", "full"),
-    ("CJK Compatibility Forms", "full"),
-    ("Halfwidth and Fullwidth Forms", "full"),
-    ("Kana Supplement", "full"),
-    ("Enclosed Alphanumeric Supplement", "half"),
-    ("Enclosed Ideographic Supplement", "full"),
-    ("CJK Unified Ideographs Extension B", "full"),
-    ("CJK Unified Ideographs Extension C", "full"),
-    ("CJK Unified Ideographs Extension D", "full"),
-    ("CJK Compatibility Ideographs Supplement", "full"),
-]
+    "Hebrew": ("half", "gemg"),
+    "Thai": ("half", "gemg"),
+    "Enclosed Alphanumerics": ("half", "gemg"),
+    "CJK Radicals Supplement": ("full", "gemg"),
+    "Kangxi Radicals": ("full", "gemg"),
+    "Ideographic Description Characters": ("full", "gemg"),
+    "CJK Symbols and Punctuation": ("full", "gemg"),
+    "Hiragana": ("full", "gemg"),
+    "Katakana": ("full", "gemg"),
+    "Katakana Phonetic Extensions": ("full", "gemg"),
+    "Enclosed CJK Letters and Months": ("full", "gemg"),
+    "CJK Compatibility": ("full", "gemg"),
+    "CJK Unified Ideographs Extension A": ("full", "gemg"),
+    "CJK Unified Ideographs": ("full", "gemg"),
+    "CJK Compatibility Ideographs": ("full", "gemg"),
+    "CJK Compatibility Forms": ("full", "gemg"),
+    "Halfwidth and Fullwidth Forms": ("complex", "gemg"),
+    "Kana Supplement": ("full", "gemg"),
+    "Enclosed Alphanumeric Supplement": ("half", "gemg"),
+    "Enclosed Ideographic Supplement": ("full", "gemg"),
+    "CJK Unified Ideographs Extension B": ("full", "gemg"),
+    "CJK Unified Ideographs Extension C": ("full", "gemg"),
+    "CJK Unified Ideographs Extension D": ("full", "gemg"),
+    "CJK Compatibility Ideographs Supplement": ("full", "gemg"),
+}
 
 TARGET_WIDTHS: dict[str, str] = {
     "F": "full",
@@ -410,7 +410,7 @@ TARGET_WIDTHS: dict[str, str] = {
 }
 
 
-def unicode_block(codepoint: int) -> tuple[int, int, str]:
+def unicode_block_of(codepoint: int) -> tuple[int, int, str]:
     def extract_end(p: tuple[int, int, str]) -> int:
         return p[1]
 
@@ -429,6 +429,10 @@ def unicode_block(codepoint: int) -> tuple[int, int, str]:
         return UNICODE_BLOCK_NO
 
 
-def target_width(codepoint: int) -> str:
+def target_width_of(codepoint: int) -> str:
     eaw = east_asian_width(chr(codepoint))
     return TARGET_WIDTHS[eaw]
+
+
+def block_width_of(block_name: str) -> tuple[str, str | None] | None:
+    return TARGET_BLOCKS.get(block_name, None)

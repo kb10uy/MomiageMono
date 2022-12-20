@@ -1,5 +1,5 @@
 import sys
-from mmtool.unicode import unicode_block
+from mmtool.unicode import unicode_block_of
 import fontforge
 
 
@@ -13,7 +13,7 @@ for glyph in font.glyphs():
 
     codepoint = glyph.unicode
     char = chr(codepoint)
-    block = unicode_block(codepoint)
+    block = unicode_block_of(codepoint)
     glyph_width = glyph.width / base_em
 
     found_blocks.add(block)
