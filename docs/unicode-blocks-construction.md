@@ -43,8 +43,8 @@
 * **CJK Compatibility Ideographs Supplement**
 
 ## JetBrains Mono 固有
-Gujarati
-Supplemental Arrows-A
-Private Use Area
-Arabic Presentation Forms-B
-Specials
+* Gujarati
+* Supplemental Arrows-A
+* Private Use Area
+* Arabic Presentation Forms-B
+* Specials
