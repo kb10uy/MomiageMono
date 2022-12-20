@@ -46,11 +46,11 @@ def set_metrics(font: fontforge.font):
     font.hhea_ascent_add = False
     font.hhea_descent_add = False
     font.os2_winascent = 1000
-    font.os2_windescent = 200
+    font.os2_windescent = 300
     font.os2_typoascent = 800
     font.os2_typodescent = -200
     font.hhea_ascent = 1000
-    font.hhea_descent = -200
+    font.hhea_descent = -300
     font.em = 2048
 
 
