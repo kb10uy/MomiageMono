@@ -2,6 +2,7 @@ import sys
 from mmtool.unicode import target_width_of, block_width_of, unicode_block_of
 import fontforge
 
+
 font = fontforge.open(sys.argv[1])
 font_tag = sys.argv[2]
 base_em = font.em
