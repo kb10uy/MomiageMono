@@ -55,12 +55,12 @@ class Metadata:
     def generate_sfnt_names(self):
         japanese_strids = ["Preferred Family", "Preferred Styles"]
         sfnt_dict = {
-            "Copyright": """\
-                Momiage Mono
-
-                M PLUS 2: (C) 2021 The M+ FONTS Project.
-                Source Han Sans: (C) 2014-2021 Adobe.
-                JetBrains Mono: (C) 2020 The JetBrains Mono Project.""",
+            "Copyright": "\n".join[
+                "Momiage Mono: (C) 2022 kb10uy",
+                "",
+                "GenEi Mono Gothic: (C) 2020 おたもん",
+                "JetBrains Mono: (C) 2020 The JetBrains Mono Project."
+            ],
             "Vendor URL": "https://github.com/kb10uy/MomiageMono",
             "Version": self.version,
             "Preferred Family": "Momiage Mono",

@@ -1,8 +1,8 @@
 from typing import Any
 from datetime import date
 from pathlib import Path
-from scripts import font_action
-from scripts.data import SourceSet, Metadata, is_japanese
+from mmtool import font_action
+from mmtool.data import SourceSet, Metadata, is_japanese
 import fontforge
 import psMat
 
