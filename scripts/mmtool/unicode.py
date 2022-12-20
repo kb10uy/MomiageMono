@@ -1,4 +1,6 @@
+from unicodedata import east_asian_width
 import bisect
+
 
 UNICODE_BLOCK_NO = (0x0000, 0x1FFFFF, "No_Block")
 UNICODE_BLOCKS: list[tuple[int, int, str]] = [
@@ -331,8 +333,84 @@ UNICODE_BLOCKS: list[tuple[int, int, str]] = [
     (0x100000, 0x10FFFF, "Supplementary Private Use Area-B"),
 ]
 
+TARGET_BLOCKS: list[tuple(str, str)] = [
+    # Common
+    ("Arrows", "half"),
+    ("Basic Latin", "half"),
+    ("Block Elements", "half"),
+    ("Box Drawing", "half"),
+    ("Combining Diacritical Marks", "half"),
+    ("Control Pictures", "half"),
+    ("Currency Symbols", "half"),
+    ("Cyrillic", "half"),
+    ("Dingbats", "half"),
+    ("General Punctuation", "half"),
+    ("Geometric Shapes", "half"),
+    ("Greek and Coptic", "half"),
+    ("IPA Extensions", "half"),
+    ("Latin Extended Additional", "half"),
+    ("Latin Extended-A", "half"),
+    ("Latin Extended-B", "half"),
+    ("Latin-1 Supplement", "half"),
+    ("Letterlike Symbols", "half"),
+    ("Mathematical Alphanumeric Symbols", "half"),
+    ("Mathematical Operators", "half"),
+    ("Miscellaneous Mathematical Symbols-A", "half"),
+    ("Miscellaneous Mathematical Symbols-B", "half"),
+    ("Miscellaneous Symbols", "half"),
+    ("Miscellaneous Symbols and Arrows", "half"),
+    ("Miscellaneous Technical", "half"),
+    ("Number Forms", "half"),
+    ("Spacing Modifier Letters", "half"),
+    ("Superscripts and Subscripts", "half"),
+    ("Supplemental Arrows-B", "half"),
+    ("Supplemental Mathematical Operators", "half"),
 
-def find_block(codepoint: int) -> tuple[int, int, str]:
+    # JetBrains Mono specific
+    ("Gujarati", "half"),
+    ("Supplemental Arrows-A", "half"),
+    ("Private Use Area", "half"),
+    ("Arabic Presentation Forms-B", "half"),
+    ("Specials", "half"),
+
+    # GenEi specific
+    ("Hebrew", "half"),
+    ("Thai", "half"),
+    ("Enclosed Alphanumerics", "half"),
+    ("CJK Radicals Supplement", "full"),
+    ("Kangxi Radicals", "full"),
+    ("Ideographic Description Characters", "full"),
+    ("CJK Symbols and Punctuation", "full"),
+    ("Hiragana", "full"),
+    ("Katakana", "full"),
+    ("Katakana Phonetic Extensions", "full"),
+    ("Enclosed CJK Letters and Months", "full"),
+    ("CJK Compatibility", "full"),
+    ("CJK Unified Ideographs Extension A", "full"),
+    ("CJK Unified Ideographs", "full"),
+    ("CJK Compatibility Ideographs", "full"),
+    ("CJK Compatibility Forms", "full"),
+    ("Halfwidth and Fullwidth Forms", "full"),
+    ("Kana Supplement", "full"),
+    ("Enclosed Alphanumeric Supplement", "half"),
+    ("Enclosed Ideographic Supplement", "full"),
+    ("CJK Unified Ideographs Extension B", "full"),
+    ("CJK Unified Ideographs Extension C", "full"),
+    ("CJK Unified Ideographs Extension D", "full"),
+    ("CJK Compatibility Ideographs Supplement", "full"),
+]
+
+TARGET_WIDTHS: dict[str, str] = {
+    "F": "full",
+    "H": "half",
+    "W": "full",
+    "Na": "half",
+    "A": "half",
+    "N": "half",
+}
+
+
+def unicode_block(codepoint: int) -> tuple[int, int, str]:
     def extract_end(p: tuple[int, int, str]) -> int:
         return p[1]
 
@@ -349,3 +427,8 @@ def find_block(codepoint: int) -> tuple[int, int, str]:
         return UNICODE_BLOCKS[block_index]
     else:
         return UNICODE_BLOCK_NO
+
+
+def target_width(codepoint: int) -> str:
+    eaw = east_asian_width(chr(codepoint))
+    return TARGET_WIDTHS[eaw]
