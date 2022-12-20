@@ -5,30 +5,6 @@ REPO_ROOT = Path(__file__).parent.parent.parent
 REPO_FONTS = REPO_ROOT / "fonts"
 REPO_DIST = REPO_ROOT / "dist"
 
-JAPANESE_CODEPOINT_RANGES: list[tuple[int, int, str]] = [
-    # Hiragana
-    (0x3041, 0x309F, "full"),
-
-    # Katakana
-    (0x30A1, 0x30FF, "full"),
-    (0xFF61, 0xFF9F, "half"),
-
-    # Kanji
-    (0x4E00, 0x9FFF, "full"),
-    (0x2E80, 0x2EFF, "full"),
-    (0x3400, 0x4DBF, "full"),
-    (0xF900, 0xFAFF, "full"),
-    (0x020000, 0x02FA1F, "full"),
-    (0x3005, 0x3007, "full"),
-
-    # Punctuations
-    (0x3000, 0x303F, "full"),
-
-    # Fullwidth ASCII
-    (0xFF00, 0xFF5E, "full"),
-    (0xFFE0, 0xFFE6, "full"),
-]
-
 
 class SourceSet:
     gen_ei_mono_go: str
@@ -60,7 +36,8 @@ class Metadata:
                 "Momiage Mono: (C) 2022 kb10uy",
                 "",
                 "GenEi Mono Gothic: (C) 2020 おたもん",
-                "JetBrains Mono: (C) 2020 The JetBrains Mono Project."
+                "JetBrains Mono: (C) 2020 The JetBrains Mono Project.",
+                "Nerd Font: (C) 2014 Ryan L McIntyre.",
             ]),
             "Vendor URL": "https://github.com/kb10uy/MomiageMono",
             "Version": self.version,
@@ -79,14 +56,3 @@ class Metadata:
             sfnt_names.append(("Japanese", strid, sfnt_dict[strid]))
 
         return tuple(sfnt_names)
-
-
-def is_japanese(codepoint: int) -> str | None:
-    if codepoint == -1:
-        return None
-
-    for start, end, width in JAPANESE_CODEPOINT_RANGES:
-        if start <= codepoint and codepoint <= end:
-            return width
-
-    return None
