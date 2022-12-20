@@ -2,7 +2,7 @@ from typing import Any
 from datetime import date
 from pathlib import Path
 from mmtool import font_action
-from mmtool.data import SourceSet, Metadata, is_japanese
+from mmtool.data import SourceSet, Metadata, is_japanese, REPO_DIST
 import fontforge
 import psMat
 
@@ -20,7 +20,7 @@ SOURCE_SETS = {
 }
 
 
-def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: str):
+def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: Path):
     # Momiage Mono: Prepare
     font = fontforge.font()
     font.encoding = "UnicodeFull"
@@ -70,10 +70,14 @@ def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: s
 
     # Finalize
     font_action.set_info(font, metadata)
-    font.generate(filename, "", ("short-post", "PfEd-lookups", "opentype"))
+    font.generate(
+        str(filename),
+        "",
+        ("short-post", "PfEd-lookups", "opentype")
+    )
 
 
 for weight, source_set in SOURCE_SETS.items():
     metadata = Metadata(weight, VERSION)
-    target_filename = Path("dist") / f"MomiageMono-{weight}.ttf"
-    generate_momiage_mono(source_set, metadata, str(target_filename))
+    target_filename = REPO_DIST / f"MomiageMono-{weight}.ttf"
+    generate_momiage_mono(source_set, metadata, target_filename)

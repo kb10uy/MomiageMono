@@ -1,8 +1,9 @@
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path(__file__).parent.parent.parent
 REPO_FONTS = REPO_ROOT / "fonts"
+REPO_DIST = REPO_ROOT / "dist"
 
 JAPANESE_CODEPOINT_RANGES: list[tuple[int, int, str]] = [
     # Hiragana
@@ -38,10 +39,10 @@ class SourceSet:
         self.jetbrains_mono = j
 
     def gemg_path(self) -> str:
-        return str(Path("./fonts/gen-ei-mono-go") / self.gen_ei_mono_go)
+        return str(REPO_FONTS / "gen-ei-mono-go" / self.gen_ei_mono_go)
 
     def jbm_path(self) -> str:
-        return str(Path("./fonts/jetbrains-mono") / self.jetbrains_mono)
+        return str(REPO_FONTS / "jetbrains-mono" / self.jetbrains_mono)
 
 
 class Metadata:
@@ -55,12 +56,12 @@ class Metadata:
     def generate_sfnt_names(self):
         japanese_strids = ["Preferred Family", "Preferred Styles"]
         sfnt_dict = {
-            "Copyright": "\n".join[
+            "Copyright": "\n".join([
                 "Momiage Mono: (C) 2022 kb10uy",
                 "",
                 "GenEi Mono Gothic: (C) 2020 おたもん",
                 "JetBrains Mono: (C) 2020 The JetBrains Mono Project."
-            ],
+            ]),
             "Vendor URL": "https://github.com/kb10uy/MomiageMono",
             "Version": self.version,
             "Preferred Family": "Momiage Mono",
