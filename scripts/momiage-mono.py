@@ -71,7 +71,6 @@ def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: s
     # Finalize
     font_action.set_info(font, metadata)
     font.generate(filename, "", ("short-post", "PfEd-lookups", "opentype"))
-    font.save(f"{filename}.sfd")
 
 
 for weight, source_set in SOURCE_SETS.items():
