@@ -2,7 +2,6 @@
 set -e
 
 mkdir -p "fonts"
-curl "https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/font-patcher" > fonts/font-patcher
 
 mkdir -p "fonts/gen-ei-mono-go"
 pushd "fonts/gen-ei-mono-go"
@@ -23,3 +22,4 @@ pushd "fonts/jetbrains-mono"
 popd
 
 mkdir -p "dist"
+rm -rf "dist/*"
