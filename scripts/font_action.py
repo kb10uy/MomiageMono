@@ -3,42 +3,6 @@ from .data import Metadata
 import fontforge
 
 
-class Metadata:
-    weight: str
-    version: str
-
-    def __init__(self, w: str, v: str):
-        self.weight = w
-        self.version = v
-
-    def generate_sfnt_names(self):
-        japanese_strids = ["Preferred Family", "Preferred Styles"]
-        sfnt_dict = {
-            "Copyright": """\
-                Momiage Mono
-
-                M PLUS 2: (C) 2021 The M+ FONTS Project.
-                Source Han Sans: (C) 2014-2021 Adobe.
-                JetBrains Mono: (C) 2020 The JetBrains Mono Project.""",
-            "Vendor URL": "https://github.com/kb10uy/MomiageMono",
-            "Version": self.version,
-            "Preferred Family": "Momiage Mono",
-            "Preferred Styles": self.weight,
-            "Family": f"Momiage Mono {self.weight}",
-            "SubFamily": self.weight,
-            "Fullname": f"MomiageMono-{self.weight}",
-            "PostScriptName": f"MomiageMono-{self.weight}",
-        }
-
-        sfnt_names = []
-        for strid, value in sfnt_dict.items():
-            sfnt_names.append(("English (US)", strid, value))
-        for strid in japanese_strids:
-            sfnt_names.append(("Japanese", strid, sfnt_dict[strid]))
-
-        return tuple(sfnt_names)
-
-
 def fetch_glyph_names(font: fontforge.font, predicate: Callable[[fontforge.glyph], bool] | None) -> list[str]:
     glyph_names = []
 
@@ -60,11 +24,13 @@ def create_insufficient_slots(font: fontforge.font, glyph_names: list[str]):
 
 
 def copy_glyphs(dest: fontforge.font, src: fontforge.font, glyph_names: list[str]):
-    for glyph_name in glyph_names:
+    for i, glyph_name in enumerate(glyph_names):
+        if i % 100 == 0:
+            print(f"=> Copied {i} glyphs")
         src.selection.select(glyph_name)
         src.copy()
         dest.selection.select(glyph_name)
-        src.paste()
+        dest.paste()
 
 
 def set_metrics(font: fontforge.font):
@@ -100,14 +66,3 @@ def _generate_gasp() -> tuple:
         (13, ("antialias", "symmetric-smoothing")),
         (65535, ("antialias", "symmetric-smoothing")),
     )
-
-
-def generate_mark_tuple() -> tuple:
-    feature = "mark"
-    languages = tuple([
-        ("DFLT", "dflt"),
-        ("latn", "dflt"),
-    ])
-    return tuple([
-        (feature, languages),
-    ])

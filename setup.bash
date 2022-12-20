@@ -1,30 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-rm -rf "fonts" "dist"
-
-mkdir -p "fonts/m-plus-1-code"
-pushd "fonts/m-plus-1-code"
-    wget -O "m-plus-1-code.zip" "https://fonts.google.com/download?family=M%20PLUS%201%20Code"
-    unzip -j "m-plus-1-code.zip" "static/*"
-popd
-
-mkdir -p "fonts/m-plus-2"
-pushd "fonts/m-plus-2"
-    wget -O "m-plus-2.zip" "https://fonts.google.com/download?family=M%20PLUS%202"
-    unzip -j "m-plus-2.zip" "static/*"
-popd
-
-mkdir -p "fonts/source-han-sans"
-pushd "fonts/source-han-sans"
-    wget -O "source-han-sans.zip" "https://github.com/adobe-fonts/source-han-sans/releases/download/2.004R/SourceHanSansJ.zip"
-    unzip -j "source-han-sans.zip" "OTF/Japanese/*"
+mkdir -p "fonts/gen-ei-mono-go"
+pushd "fonts/gen-ei-mono-go"
+    if [[ ! -f "GenEiMonoGothic_v1.0.zip" ]]; then
+        echo "You have to download \"GenEiMonoGothic_v1.0.zip\" manually."
+        echo "https://okoneya.jp/font/genei-mono-go.html"
+    else
+        unzip -j "GenEiMonoGothic_v1.0.zip" "GenEiMonoGothic_v1.0/GenEiMonoGothic-*.ttf"
+    fi
 popd
 
 mkdir -p "fonts/jetbrains-mono"
 pushd "fonts/jetbrains-mono"
-    wget -O "jetbrains-mono.zip" "https://fonts.google.com/download?family=JetBrains%20Mono"
-    unzip -j "jetbrains-mono.zip" "static/*"
+    wget -O "jetbrains-mono.zip" "https://github.com/JetBrains/JetBrainsMono/releases/download/v2.242/JetBrainsMono-2.242.zip"
+    unzip -j "jetbrains-mono.zip" "fonts/ttf/*"
 popd
 
-mkdir "dist"
+mkdir -p "dist"

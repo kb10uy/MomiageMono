@@ -1,8 +1,8 @@
 from typing import Any
 from datetime import date
 from pathlib import Path
-from .data import SourceSet
-from .font import Metadata, fetch_glyph_names, create_insufficient_slots, set_metrics, set_info, generate_mark_tuple, copy_glyphs
+from scripts import font_action
+from scripts.data import SourceSet, Metadata, is_japanese
 import fontforge
 import psMat
 
@@ -10,13 +10,11 @@ import psMat
 VERSION = f"1.0-{date.today()}"
 SOURCE_SETS = {
     "Regular": SourceSet(
-        "MPLUS2-Regular.ttf",
-        "SourceHanSans-Regular.otf",
+        "GenEiMonoGothic-Regular.ttf",
         "JetBrainsMono-Regular.ttf"
     ),
     "Bold": SourceSet(
-        "MPLUS2-Bold.ttf",
-        "SourceHanSans-Bold.otf",
+        "GenEiMonoGothic-Bold.ttf",
         "JetBrainsMono-Bold.ttf"
     ),
 }
@@ -26,45 +24,116 @@ def generate_momiage_mono(source_set: SourceSet, metadata: Metadata, filename: s
     # Momiage Mono: Prepare
     font = fontforge.font()
     font.encoding = "UnicodeFull"
-    set_metrics(font)
+    font_action.set_metrics(font)
 
     # Momiage Mono: Add Anchor Class
-    font.addLookup("marks", "gpos_mark2base", None, generate_mark_tuple())
-    font.addLookupSubtable("marks", "anchors")
-    font.addAnchorClass("anchors", "Anchor-0")
-    font.addAnchorClass("anchors", "Anchor-1")
-    font.addAnchorClass("anchors", "Anchor-2")
-
-    # M PLUS 2: Prepare
-    font_mp2 = fontforge.open(source_set.m_plus_2_path())
-
-    # M PLUS 2: Scale fullwidth glyphs x1.2 and set width to 2456
-    transformation = psMat.compose(
-        psMat.translate(75, -70),
-        psMat.scale(1.05, 1.05),
+    font.addLookup(
+        "Mark-to-Base Lookup for JetBrains Mono (0)",
+        "gpos_mark2base", None,
+        (
+            ("mark", (
+                ("DFLT", "dflt"),
+                ("latn", "AZE "),
+                ("latn", "CAT "),
+                ("latn", "CRT "),
+                ("latn", "KAZ "),
+                ("latn", "MOL "),
+            )),
+        )
     )
+    font.addLookupSubtable(
+        "Mark-to-Base Lookup for JetBrains Mono (0)",
+        "Anchors Subtable for JetBrains Mono (0)"
+    )
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-0")
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-1")
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-2")
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-3")
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (0)", "Anchor-4")
 
-    font_mp2.selection.none()
-    for glyph in font_mp2.glyphs():
-        if glyph.width != 1000:
+    font.addLookup(
+        "Mark-to-Mark Lookup for JetBrains Mono (1)",
+        "gpos_mark2mark", None,
+        (
+            ("mkmk", (
+                ("DFLT", "dflt"),
+                ("latn", "AZE "),
+                ("latn", "CAT "),
+                ("latn", "CRT "),
+                ("latn", "KAZ "),
+                ("latn", "MOL "),
+            )),
+        ),
+        "Mark-to-Base Lookup for JetBrains Mono (0)"
+    )
+    font.addLookupSubtable(
+        "Mark-to-Mark Lookup for JetBrains Mono (1)",
+        "Anchors Subtable for JetBrains Mono (1)"
+    )
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (1)", "Anchor-5")
+
+    font.addLookup(
+        "Mark-to-Mark Lookup for JetBrains Mono (2)",
+        "gpos_mark2mark", None,
+        (
+            ("mkmk", (
+                ("DFLT", "dflt"),
+                ("latn", "AZE "),
+                ("latn", "CAT "),
+                ("latn", "CRT "),
+                ("latn", "KAZ "),
+                ("latn", "MOL "),
+            )),
+        ),
+        "Mark-to-Mark Lookup for JetBrains Mono (1)"
+    )
+    font.addLookupSubtable(
+        "Mark-to-Mark Lookup for JetBrains Mono (2)",
+        "Anchors Subtable for JetBrains Mono (2)"
+    )
+    font.addAnchorClass("Anchors Subtable for JetBrains Mono (2)", "Anchor-6")
+
+    # GenEi Mono Gothic
+    print("Copying glyphs from GenEi Mono Gothic")
+
+    gemg_font = fontforge.open(source_set.gemg_path())
+    gemg_font.em = 2048
+
+    transformation = psMat.compose(
+        psMat.translate(102, 0),
+        psMat.scale(1.1, 1.1),
+    )
+    gemg_font.selection.all()
+    for glyph in gemg_font.selection.byGlyphs:
+        width = is_japanese(glyph.unicode)
+        if width is None:
             continue
+
         glyph.transform(transformation)
-        glyph.width = 1200
+        if width == "half":
+            glyph.width = 1288
+        elif width == "full":
+            glyph.width = 2456
 
-    # M PLUS 2: Copy fullwidth glyphs to Momiage Mono
-    mp2_glyph_names = fetch_glyph_names(font_mp2, lambda g: g.width == 1200)
-    create_insufficient_slots(font, mp2_glyph_names)
-    copy_glyphs(font, font_mp2, mp2_glyph_names)
+    gemg_glyph_names = font_action.fetch_glyph_names(
+        gemg_font,
+        lambda g: is_japanese(g.unicode) is not None
+    )
+    font_action.create_insufficient_slots(font, gemg_glyph_names)
+    font_action.copy_glyphs(font, gemg_font, gemg_glyph_names)
 
-    # JetBrains Mono: Prepare
-    font_jbm = fontforge.open(source_set.jbm_path())
+    # JetBrains Mono
+    print("Copying glyphs from JetBrains Mono")
 
-    # JetBrains Mono: Copy all glyphs to Momiage Mono
-    jbm_glyph_names = fetch_glyph_names(font_mp2, None)
-    create_insufficient_slots(font, jbm_glyph_names)
-    copy_glyphs(font, font_jbm, jbm_glyph_names)
+    jbm_font = fontforge.open(source_set.jbm_path())
+    jbm_font.em = 2048
 
-    set_info(font)
+    jbm_glyph_names = font_action.fetch_glyph_names(jbm_font, None)
+    font_action.create_insufficient_slots(font, jbm_glyph_names)
+    font_action.copy_glyphs(font, jbm_font, jbm_glyph_names)
+
+    # Finalize
+    font_action.set_info(font, metadata)
     font.generate(filename, "", ("short-post", "PfEd-lookups", "opentype"))
 
 
