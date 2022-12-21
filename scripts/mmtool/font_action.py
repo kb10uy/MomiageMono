@@ -28,15 +28,20 @@ def fetch_glyph_names(font: fontforge.font, predicate: Callable[[fontforge.glyph
 
 
 def create_insufficient_slots(font: fontforge.font, glyph_names: list[str]):
+    new_slots = 0
     for glyph_name in glyph_names:
         if font.findEncodingSlot(glyph_name) == -1:
-            new_glyph = font.createChar(-1, glyph_name)
+            font.createChar(-1, glyph_name)
+            new_slots += 1
+
+    print(f"==> Created {new_slots} new slots")
 
 
 def copy_glyphs(dest: fontforge.font, src: fontforge.font, glyph_names: list[str]):
     for i, glyph_name in enumerate(glyph_names):
-        if i % 100 == 0:
-            print(f"=> Copied {i} glyphs")
+        if i % 500 == 0:
+            print(f"==> Copied {i} glyphs")
+
         src.selection.select(glyph_name)
         src.copy()
         dest.selection.select(glyph_name)

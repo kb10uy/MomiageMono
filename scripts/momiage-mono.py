@@ -130,11 +130,11 @@ def generate_momiage_mono(target: Target, filename: Path):
     font_action.set_metrics(font)
 
     # GenEi Mono Gothic
-    print("Copying glyphs from GenEi Mono Gothic")
+    print("=> Copying glyphs from GenEi Mono Gothic")
     _copy_genei_mono_gothic(font, target)
 
     # JetBrains Mono
-    print("Copying glyphs from JetBrains Mono")
+    print("=> Copying glyphs from JetBrains Mono")
     _copy_jetbrains_mono(font, target)
 
     # Finalize
