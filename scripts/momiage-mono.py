@@ -96,10 +96,8 @@ def _copy_genei_mono_gothic(font: fontforge.font, target: Target):
         if glyph_width == target_width:
             glyph.transform(GENEI_TRANSFORMS[("uniform", make_oblique)])
         elif glyph_width == "full":
-            # print(f"Applying full-to-half transform for U+{glyph.unicode:06X}")
             glyph.transform(GENEI_TRANSFORMS[("full2half", make_oblique)])
         elif glyph_width == "half":
-            # print(f"Applying half-to-full transform for U+{glyph.unicode:06X}")
             glyph.transform(GENEI_TRANSFORMS[("half2full", make_oblique)])
         glyph.width = 2456 if target_width == "full" else 1228
 
@@ -107,6 +105,8 @@ def _copy_genei_mono_gothic(font: fontforge.font, target: Target):
 
     font_action.create_insufficient_slots(font, gemg_glyph_names)
     font_action.copy_glyphs(font, gemg_font, gemg_glyph_names)
+
+    gemg_font.close()
 
 
 def _copy_jetbrains_mono(font: fontforge.font, target: Target):
@@ -119,6 +119,8 @@ def _copy_jetbrains_mono(font: fontforge.font, target: Target):
     jbm_glyph_names = font_action.fetch_glyph_names(jbm_font, None)
     font_action.create_insufficient_slots(font, jbm_glyph_names)
     font_action.copy_glyphs(font, jbm_font, jbm_glyph_names)
+
+    jbm_font.close()
 
 
 def generate_momiage_mono(target: Target, filename: Path):
