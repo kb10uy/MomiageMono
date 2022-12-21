@@ -5,54 +5,64 @@ REPO_ROOT = Path(__file__).parent.parent.parent
 REPO_FONTS = REPO_ROOT / "fonts"
 REPO_DIST = REPO_ROOT / "dist"
 
+WEIGHT_VALUES = {
+    "Regular": 400,
+    "Bold": 700,
+}
 
-class SourceSet:
-    gen_ei_mono_go: str
-    jetbrains_mono: str
 
-    def __init__(self, g: str, j: str):
-        self.gen_ei_mono_go = g
-        self.jetbrains_mono = j
+class Style:
+    _weight: str | None
+    _italic: bool
+
+    def __init__(self, weight: str | None, italic: bool):
+        self._weight = weight
+        self._italic = italic
+
+    def weight_name(self) -> str:
+        if self._weight is None:
+            return "Regular"
+        else:
+            return self._weight
+
+    def weight_value(self):
+        return WEIGHT_VALUES[self.weight_name()]
+
+    def is_italic(self) -> bool:
+        return self._italic
+
+    def subfamily_name(self) -> str:
+        name = "Italic" if self._italic else ""
+        if self._weight is not None:
+            name = f"{self._weight} {name}"
+        if name == "":
+            name = "Regular"
+        return name
+
+    def subfamily_id(self) -> str:
+        return self.subfamily_name().replace(" ", "")
+
+
+class Target:
+    _version: str
+    _style: Style
+    _gen_ei_mono_go: str
+    _jetbrains_mono: str
+
+    def __init__(self, version: str, style: Style, g: str, j: str):
+        self._version = version
+        self._style = style
+        self._gen_ei_mono_go = g
+        self._jetbrains_mono = j
+
+    def version(self) -> str:
+        return self._version
+
+    def style(self) -> Style:
+        return self._style
 
     def gemg_path(self) -> str:
-        return str(REPO_FONTS / "gen-ei-mono-go" / self.gen_ei_mono_go)
+        return str(REPO_FONTS / "gen-ei-mono-go" / self._gen_ei_mono_go)
 
     def jbm_path(self) -> str:
-        return str(REPO_FONTS / "jetbrains-mono" / self.jetbrains_mono)
-
-
-class Metadata:
-    weight: str
-    version: str
-
-    def __init__(self, w: str, v: str):
-        self.weight = w
-        self.version = v
-
-    def generate_sfnt_names(self):
-        japanese_strids = ["Preferred Family", "Preferred Styles"]
-        sfnt_dict = {
-            "Copyright": "\n".join([
-                "Momiage Mono: (C) 2022 kb10uy",
-                "",
-                "GenEi Mono Gothic: (C) 2020 おたもん",
-                "JetBrains Mono: (C) 2020 The JetBrains Mono Project.",
-                "Nerd Font: (C) 2014 Ryan L McIntyre.",
-            ]),
-            "Vendor URL": "https://github.com/kb10uy/MomiageMono",
-            "Version": self.version,
-            "Preferred Family": "Momiage Mono",
-            "Preferred Styles": self.weight,
-            "Family": f"Momiage Mono {self.weight}",
-            "SubFamily": self.weight,
-            "Fullname": f"MomiageMono-{self.weight}",
-            "PostScriptName": f"MomiageMono-{self.weight}",
-        }
-
-        sfnt_names = []
-        for strid, value in sfnt_dict.items():
-            sfnt_names.append(("English (US)", strid, value))
-        for strid in japanese_strids:
-            sfnt_names.append(("Japanese", strid, sfnt_dict[strid]))
-
-        return tuple(sfnt_names)
+        return str(REPO_FONTS / "jetbrains-mono" / self._jetbrains_mono)

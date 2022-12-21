@@ -1,6 +1,16 @@
 from collections.abc import Callable
-from .data import Metadata
+from functools import reduce
+from .data import Target
 import fontforge
+import psMat
+
+
+def compose_transforms(transforms: list[tuple]) -> tuple:
+    return reduce(
+        lambda composed, next: psMat.compose(next, composed),
+        transforms,
+        psMat.identity()
+    )
 
 
 def fetch_glyph_names(font: fontforge.font, predicate: Callable[[fontforge.glyph], bool] | None) -> list[str]:
@@ -21,7 +31,6 @@ def create_insufficient_slots(font: fontforge.font, glyph_names: list[str]):
     for glyph_name in glyph_names:
         if font.findEncodingSlot(glyph_name) == -1:
             new_glyph = font.createChar(-1, glyph_name)
-            print(f"{glyph_name} => {new_glyph.glyphname}")
 
 
 def copy_glyphs(dest: fontforge.font, src: fontforge.font, glyph_names: list[str]):
@@ -54,11 +63,17 @@ def set_metrics(font: fontforge.font):
     font.em = 2048
 
 
-def set_info(font: fontforge.font, metadata: Metadata):
-    font.os2_vendor = "n935"
-    font.sfnt_names = metadata.generate_sfnt_names()
+def set_info(font: fontforge.font, target: Target):
+    target_style = target.style()
+
+    font.fontname = f"MomiageMono-{target_style.subfamily_id()}"
+    font.familyname = f"Momiage Mono"
+    font.weight = target_style.weight_name()
+    font.italicangle = -9 if target_style.is_italic() else 0
+    font.os2_weight = target_style.weight_value()
     font.gasp_version = 1
     font.gasp = _generate_gasp()
+    font.sfnt_names = _generate_sfnt_names(target)
 
 
 def _generate_gasp() -> tuple:
@@ -67,3 +82,30 @@ def _generate_gasp() -> tuple:
         (13, ("antialias", "symmetric-smoothing")),
         (65535, ("antialias", "symmetric-smoothing")),
     )
+
+
+def _generate_sfnt_names(target: Target) -> tuple:
+    subfamily_name = target._style.subfamily_name()
+    subfamily_id = target._style.subfamily_id()
+
+    sfnt_dict = {
+        "Copyright": "\n".join([
+            "Momiage Mono: (C) 2022 kb10uy",
+            "",
+            "GenEi Mono Gothic: (C) 2020 おたもん",
+            "JetBrains Mono: (C) 2020 The JetBrains Mono Project.",
+            "Nerd Font: (C) 2014 Ryan L McIntyre.",
+        ]),
+        "Family": f"Momiage Mono",
+        "SubFamily": subfamily_name,
+        "UniqueID": f"{target.version()};MomiageMono-{subfamily_id}",
+        "Fullname": f"Momiage Mono {subfamily_name}",
+        "Version": target.version(),
+        "Vendor URL": "https://github.com/kb10uy/MomiageMono",
+    }
+
+    sfnt_names = []
+    for strid, value in sfnt_dict.items():
+        sfnt_names.append(("English (US)", strid, value))
+
+    return tuple(sfnt_names)
