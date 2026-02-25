@@ -19,7 +19,7 @@ popd
 mkdir -p "fonts/jetbrains-mono"
 pushd "fonts/jetbrains-mono"
     rm -rf *
-    wget -O "jetbrains-mono.zip" "https://github.com/JetBrains/JetBrainsMono/releases/download/v2.242/JetBrainsMono-2.242.zip"
+    wget -O "jetbrains-mono.zip" "https://github.com/JetBrains/JetBrainsMono/releases/download/v2.304/JetBrainsMono-2.304.zip"
     unzip -j "jetbrains-mono.zip" "fonts/ttf/*"
 popd
 

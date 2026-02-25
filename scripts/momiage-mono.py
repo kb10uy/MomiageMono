@@ -11,30 +11,30 @@ import psMat
 GENEI_TRANSFORMS: dict[tuple[str, str]] = {
     ("uniform", False): font_action.compose_transforms([
         psMat.scale(1.1, 1.1),
-        psMat.translate(102, 0)
+        psMat.translate(50, 0)
     ]),
     ("full2half", False): font_action.compose_transforms([
         psMat.scale(0.8, 0.8),
-        psMat.translate(-205, 0)
+        psMat.translate(-100, 0)
     ]),
     ("half2full", False): font_action.compose_transforms([
         psMat.scale(1.25, 1.25),
-        psMat.translate(589, 0)
+        psMat.translate(288, 0)
     ]),
     ("uniform", True): font_action.compose_transforms([
         psMat.scale(1.1, 1.1),
         psMat.skew(radians(9)),
-        psMat.translate(102, 0)
+        psMat.translate(50, 0)
     ]),
     ("full2half", True): font_action.compose_transforms([
         psMat.scale(0.8, 0.8),
         psMat.skew(radians(9)),
-        psMat.translate(-205, 0)
+        psMat.translate(-100, 0)
     ]),
     ("half2full", True): font_action.compose_transforms([
         psMat.scale(1.25, 1.25),
         psMat.skew(radians(9)),
-        psMat.translate(589, 0)
+        psMat.translate(288, 0)
     ]),
 }
 
@@ -72,7 +72,7 @@ def _copy_genei_mono_gothic(font: fontforge.font, target: Target):
     make_oblique = target_style.is_italic()
 
     gemg_font = fontforge.open(target.gemg_path())
-    gemg_font.em = 2048
+    gemg_font.em = 1000
 
     gemg_font.selection.all()
     gemg_glyph_names = []
@@ -99,7 +99,7 @@ def _copy_genei_mono_gothic(font: fontforge.font, target: Target):
             glyph.transform(GENEI_TRANSFORMS[("full2half", make_oblique)])
         elif glyph_width == "half":
             glyph.transform(GENEI_TRANSFORMS[("half2full", make_oblique)])
-        glyph.width = 2456 if target_width == "full" else 1228
+        glyph.width = 1200 if target_width == "full" else 600
 
         gemg_glyph_names.append(glyph.glyphname)
 
@@ -111,7 +111,7 @@ def _copy_genei_mono_gothic(font: fontforge.font, target: Target):
 
 def _copy_jetbrains_mono(font: fontforge.font, target: Target):
     jbm_font = fontforge.open(target.jbm_path())
-    jbm_font.em = 2048
+    jbm_font.em = 1000
 
     font.importLookups(jbm_font, jbm_font.gsub_lookups)
     font.importLookups(jbm_font, jbm_font.gpos_lookups)
