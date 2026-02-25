@@ -23,5 +23,12 @@ pushd "fonts/jetbrains-mono"
     unzip -j "jetbrains-mono.zip" "fonts/ttf/*"
 popd
 
+mkdir -p "fonts/nerd-fonts-patcher"
+pushd "fonts/nerd-fonts-patcher"
+    rm -rf *
+    wget -O "FontPatcher.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FontPatcher.zip"
+    unzip "FontPatcher.zip"
+popd
+
 mkdir -p "dist"
 rm -rf "dist/*"
