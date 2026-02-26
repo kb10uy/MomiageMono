@@ -65,7 +65,7 @@ def set_metrics(font: fontforge.font):
     font.os2_typodescent = -200
     font.hhea_ascent = 1100
     font.hhea_descent = -200
-    font.em = 1000
+    font.em = 2048
 
 
 def set_info(font: fontforge.font, target: Target):
