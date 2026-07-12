@@ -71,11 +71,27 @@ def set_metrics(font: fontforge.font):
 def set_info(font: fontforge.font, target: Target):
     target_style = target.style()
 
+    is_italic = target_style.is_italic()
+    is_bold = target_style.weight_name() == "Bold"
+
     font.fontname = f"MomiageMono-{target_style.subfamily_id()}"
     font.familyname = f"Momiage Mono"
     font.weight = target_style.weight_name()
-    font.italicangle = -9 if target_style.is_italic() else 0
+    font.italicangle = -9 if is_italic else 0
     font.os2_weight = target_style.weight_value()
+
+    # Style-linking flags. Without these, OS/font matchers (e.g. the
+    # JetBrains editor) cannot recognise the italic/bold members of the
+    # family and fall back to a synthetic (over-slanted) faux italic.
+    # head.macStyle: bit0 = bold, bit1 = italic
+    font.macstyle = ((1 << 0) if is_bold else 0) | ((1 << 1) if is_italic else 0)
+    # OS/2.fsSelection: bit0 = italic, bit5 = bold, bit6 = regular
+    # (REGULAR is mutually exclusive with BOLD/ITALIC)
+    if is_bold or is_italic:
+        font.os2_stylemap = ((1 << 0) if is_italic else 0) | ((1 << 5) if is_bold else 0)
+    else:
+        font.os2_stylemap = (1 << 6)
+
     font.gasp_version = 1
     font.gasp = _generate_gasp()
     font.sfnt_names = _generate_sfnt_names(target)
