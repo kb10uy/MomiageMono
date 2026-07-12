@@ -139,10 +139,16 @@ def generate_momiage_mono(target: Target, filename: Path):
 
     # Finalize
     font_action.set_info(font, target)
+    # NOTE: Do not emit the "PfEd-lookups" flag. It stores FontForge's private
+    # lookup metadata (inherited from JetBrains Mono's imported GSUB lookups)
+    # into the PfEd table, and that data makes fontforge's glyph.getPosSub()
+    # raise on read. That in turn crashes the Nerd Fonts font-patcher in
+    # get_essential_references(). PfEd is editor-only metadata and is not needed
+    # in the distributed font.
     font.generate(
         str(filename),
         "",
-        ("short-post", "PfEd-lookups", "opentype")
+        ("short-post", "opentype")
     )
 
 
