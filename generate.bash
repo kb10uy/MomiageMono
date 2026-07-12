@@ -12,6 +12,10 @@ pushd "dist"
         ../fonts/nerd-fonts-patcher/font-patcher -c $filename
         mv "MomiageMonoNerdFont-${subfamily}.ttf" "MomiageMono-${subfamily}-NerdFont.ttf"
 
+        # font-patcher mis-detects this dual-width font as single-width monospace
+        # and enlarges its metrics; realign the Nerd Font variant to the base.
+        python3 "../scripts/fix_nerdfont_metrics.py" "$filename" "MomiageMono-${subfamily}-NerdFont.ttf"
+
         zip "package.zip" $filename "MomiageMono-${subfamily}-NerdFont.ttf"
     done
 
