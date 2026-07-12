@@ -84,9 +84,11 @@ def set_info(font: fontforge.font, target: Target):
     # JetBrains editor) cannot recognise the italic/bold members of the
     # family and fall back to a synthetic (over-slanted) faux italic.
     # head.macStyle: bit0 = bold, bit1 = italic
+    # cf. https://learn.microsoft.com/ja-jp/typography/opentype/spec/head
     font.macstyle = ((1 << 0) if is_bold else 0) | ((1 << 1) if is_italic else 0)
     # OS/2.fsSelection: bit0 = italic, bit5 = bold, bit6 = regular
     # (REGULAR is mutually exclusive with BOLD/ITALIC)
+    # cf. https://learn.microsoft.com/ja-jp/typography/opentype/spec/os2#fsselection
     if is_bold or is_italic:
         font.os2_stylemap = ((1 << 0) if is_italic else 0) | ((1 << 5) if is_bold else 0)
     else:
