@@ -34,7 +34,7 @@ class Style:
     def subfamily_name(self) -> str:
         name = "Italic" if self._italic else ""
         if self._weight is not None:
-            name = f"{self._weight} {name}"
+            name = f"{self._weight} {name}".strip()
         if name == "":
             name = "Regular"
         return name
