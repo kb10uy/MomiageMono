@@ -26,7 +26,7 @@ popd
 mkdir -p "fonts/nerd-fonts-patcher"
 pushd "fonts/nerd-fonts-patcher"
     rm -rf *
-    wget -O "FontPatcher.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FontPatcher.zip"
+    wget -O "FontPatcher.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FontPatcher.zip"
     unzip "FontPatcher.zip"
 popd
 
