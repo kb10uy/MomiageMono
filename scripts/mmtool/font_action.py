@@ -27,6 +27,47 @@ def fetch_glyph_names(font: fontforge.font, predicate: Callable[[fontforge.glyph
     return glyph_names
 
 
+def sort_by_references(font: fontforge.font, glyph_names: list[str]) -> list[str]:
+    """Reorder glyph names so that every referenced (component) glyph precedes
+    the glyphs that reference it.
+
+    When a composite glyph is pasted into a font whose component glyphs already
+    exist but are still empty (importLookups and createChar pre-create empty
+    glyphs), FontForge caches the reference bounding box from the *empty*
+    component and never refreshes it when the component is filled in later.
+    generate() then writes that stale cache into the glyf bbox / hmtx lsb, which
+    makes e.g. "i" and "j" (dotlessi + uni0307) disappear on renderers that
+    trust the glyf bbox (CoreText, DirectWrite). Copying components first avoids
+    the stale cache. See https://github.com/kb10uy/MomiageMono/issues/6
+    """
+    wanted = set(glyph_names)
+    deps = {
+        name: [ref[0] for ref in font[name].references if ref[0] in wanted]
+        for name in glyph_names
+    }
+
+    ordered: list[str] = []
+    done: set[str] = set()
+    visiting: set[str] = set()
+
+    def visit(name: str):
+        if name in done:
+            return
+        if name in visiting:
+            raise RuntimeError(f"reference cycle detected at glyph {name}")
+        visiting.add(name)
+        for dep in deps[name]:
+            visit(dep)
+        visiting.discard(name)
+        done.add(name)
+        ordered.append(name)
+
+    for name in glyph_names:
+        visit(name)
+
+    return ordered
+
+
 def create_insufficient_slots(font: fontforge.font, glyph_names: list[str]):
     new_slots = 0
     for glyph_name in glyph_names:
