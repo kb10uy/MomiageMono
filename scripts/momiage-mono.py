@@ -116,7 +116,12 @@ def _copy_jetbrains_mono(font: fontforge.font, target: Target):
     font.importLookups(jbm_font, jbm_font.gsub_lookups)
     font.importLookups(jbm_font, jbm_font.gpos_lookups)
 
-    jbm_glyph_names = font_action.fetch_glyph_names(jbm_font, None)
+    # Components must be copied before the composite glyphs that reference
+    # them, otherwise the generated glyf bbox of the composites is broken.
+    jbm_glyph_names = font_action.sort_by_references(
+        jbm_font,
+        font_action.fetch_glyph_names(jbm_font, None)
+    )
     font_action.create_insufficient_slots(font, jbm_glyph_names)
     font_action.copy_glyphs(font, jbm_font, jbm_glyph_names)
 
